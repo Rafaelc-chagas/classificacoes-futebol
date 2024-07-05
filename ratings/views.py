@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 
 URL = 'https://v3.football.api-sports.io/standings'
-API_KEY = 'a96a0aaa121b7b629c546ee7d6892a99'
+API_KEY = ''
 
 
 def get_ratings(league_id, season):
