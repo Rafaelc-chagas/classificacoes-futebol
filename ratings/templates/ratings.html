@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificações</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .international {
+            background-color: #d4edda; /* Verde claro */
+        }
+        .relegation {
+            background-color: #f8d7da; /* Vermelho claro */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Classificações dos Campeonatos</h1>
+        <form method="post" class="mb-4">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="league">Selecione o Campeonato:</label>
+                <select name="league" id="league" class="form-control">
+                    {% for league in leagues %}
+                        <option value="{{ league.id }}">{{ league.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="season">Selecione a Temporada:</label>
+                <select name="season" id="season" class="form-control">
+                    {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Obter Classificação</button>
+        </form>
+
+        {% if ratings %}
+            <h2>Classificação</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Posição</th>
+                        <th>Time</th>
+                        <th>Pontos</th>
+                        <th>Vitórias</th>
+                        <th>Empates</th>
+                        <th>Derrotas</th>
+                        <th>Saldo de Gols</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in ratings.response.0.league.standings.0 %}
+                        <tr class="{% if team.rank <= 4 %}international{% elif team.rank > 16 %}relegation{% endif %}">
+                            <td>{{ team.rank }}</td>
+                            <td>{{ team.team.name }}</td>
+                            <td>{{ team.points }}</td>
+                            <td>{{ team.all.win }}</td>
+                            <td>{{ team.all.draw }}</td>
+                            <td>{{ team.all.lose }}</td>
+                            <td>{{ team.goalsDiff }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
